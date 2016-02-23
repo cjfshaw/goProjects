@@ -335,3 +335,122 @@ func TestIsEmptyOnNonEmptyList(t *testing.T) {
 		t.Errorf("Error: isListEmpty is true.")
 	}
 }
+
+func TestRemoveNodeOfValue(t *testing.T) {
+	node1 := node{1, nil, nil}
+	node2 := node{2, nil, nil}
+	node3 := node{3, nil, nil}
+
+	node1.Next = &node2
+	node2.Prev = &node1
+	node2.Next = &node3
+	node3.Prev = &node2
+
+	list := list{&node1, &node3, 3}
+
+	t.Log("Expecting for list length to be shortened and node 2 removed.")
+
+	t.Logf("Initial node 1 next: %+v", node1.Next)
+	t.Logf("Initial node 3 prev: %+v", node3.Prev)
+
+	err := list.removeNodeOfValue(2)
+
+	t.Logf("Final node 1 next: %+v", node1.Next)
+	t.Logf("Final node 3 prev: %+v", node3.Prev)
+
+	if node1.Next != &node3 {
+		t.Errorf("Error: node 1 is not pointing next to node 3.")
+	}
+
+	if node3.Prev != &node1 {
+		t.Errorf("Error: node 3 is not pointing prev to node 1.")
+	}
+
+	if list.Length != 2 {
+		t.Errorf("Error: List length is not 2, length is %+v", list.Length)
+	}
+
+	if err != nil {
+		t.Errorf("Error: Error is not nil, error is %+v", err)
+	}
+}
+
+func TestRemoveNodeOfValueThatDoesNotExist(t *testing.T) {
+	node1 := node{1, nil, nil}
+	node2 := node{2, nil, nil}
+	node3 := node{3, nil, nil}
+
+	node1.Next = &node2
+	node2.Prev = &node1
+	node2.Next = &node3
+	node3.Prev = &node2
+
+	list := list{&node1, &node3, 3}
+
+	t.Log("Expecting to see an error.")
+
+	err := list.removeNodeOfValue(4)
+
+	if err == nil {
+		t.Error("Error is nil, it shouldn't be.")
+	}
+
+	if list.Length != 3 {
+		t.Errorf("Error: Length is not 3, %+v", list.Length)
+	}
+}
+
+func TestRemoveNodeOfValueFromEmptyList(t *testing.T) {
+	list := list{nil, nil, 0}
+
+	t.Log("Expecting to see an error.")
+
+	err := list.removeNodeOfValue(1)
+
+	if err == nil {
+		t.Error("Error is nil, it shouldn't be.")
+	}
+
+	if list.Length != 0 {
+		t.Errorf("Error: Length is not 0, %+v", list.Length)
+	}
+}
+
+func TestRemoveGivenNode(t *testing.T) {
+	node1 := node{1, nil, nil}
+	node2 := node{2, nil, nil}
+	node3 := node{3, nil, nil}
+
+	node1.Next = &node2
+	node2.Prev = &node1
+	node2.Next = &node3
+	node3.Prev = &node2
+
+	list := list{&node1, &node3, 3}
+
+	t.Log("Expecting to see list reduce in size because node 2 is removed.")
+
+	t.Logf("Initial node 1 next: %+v", node1.Next)
+	t.Logf("Initial node 3 prev: %+v", node3.Prev)
+
+	err := list.removeGivenNode(&node2)
+
+	t.Logf("Final node 1 next: %+v", node1.Next)
+	t.Logf("Final node 3 prev: %+v", node3.Prev)
+
+	if node1.Next != &node3 {
+		t.Errorf("Error: node 1 is not pointing next to node 3.")
+	}
+
+	if node3.Prev != &node1 {
+		t.Errorf("Error: node 3 is not pointing prev to node 1.")
+	}
+
+	if err != nil {
+		t.Errorf("Error: err is not nil, %+v", err)
+	}
+
+	if list.Length != 2 {
+		t.Errorf("Error: length is not 2, %+v", list.Length)
+	}
+}
