@@ -1,4 +1,4 @@
-package main
+package linked_list
 
 //list struct contains head and tail pointers
 //head and tail are node objects
