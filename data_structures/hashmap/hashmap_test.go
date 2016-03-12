@@ -54,6 +54,24 @@ func TestPut(t *testing.T) {
 	}
 }
 
+func TestPutWithCollision(t *testing.T) {
+	testElements := createElements()
+
+	t.Log("Testing that put places the entry in the next empty space when a collision occurs.")
+
+	testElements.Hashmap.put(1, 1)
+	t.Logf("Hashmap after first put: %v", testElements.Hashmap)
+	testElements.Hashmap.put(2, 1)
+	t.Logf("Hashmap after second put: %v", testElements.Hashmap)
+	testElements.Hashmap.put(3, 1)
+	t.Logf("Hashmap after third put: %v", testElements.Hashmap)
+
+	if testElements.Hashmap.Entries[2].Key != 3 {
+		t.Errorf("Error: Put did not properly place the entry in a case where collisions occur.")
+	}
+
+}
+
 func TestGet(t *testing.T) {
 	testElements := createElements()
 
@@ -98,5 +116,134 @@ func TestRemove(t *testing.T) {
 
 	if testElements.Hashmap.Entries[index] != nil {
 		t.Errorf("Error: Value of hashmap at removed key's index is not nil.  Value: %v", value)
+	}
+}
+
+func TestHashToGetIndex(t *testing.T) {
+	testElements := createElements()
+
+	t.Log("Testing whether hashToGetIndex returns expected values.")
+
+	length := len(testElements.Hashmap.Entries)
+
+	t.Logf("Length of entries: %v", length)
+
+	lessThan := testElements.Hashmap.hashToGetIndex(2)
+	greaterThan := testElements.Hashmap.hashToGetIndex(5)
+	equalTo := testElements.Hashmap.hashToGetIndex(3)
+
+	if lessThan != 1 {
+		t.Errorf("Error: 1 mod 3 should return 1 but it did not. Value: %v", lessThan)
+	}
+
+	if greaterThan != 2 {
+		t.Errorf("Error: 5 mod 3 should return 2 but it did not. Value: %v", greaterThan)
+	}
+
+	if equalTo != 0 {
+		t.Errorf("Error: x mod x should return 0 but it did not. Value: %v", equalTo)
+	}
+}
+
+func TestFirstEmptySpaceLooping(t *testing.T) {
+	testElements := createElements()
+
+	t.Log("Testing that findFirstEmptySpace loops appropriately past the final element and returns the correct index.")
+
+	testElements.Hashmap.put(3, 3)
+	testElements.Hashmap.put(5, 3)
+
+	hash3 := testElements.Hashmap.hashToGetIndex(3)
+	hash5 := testElements.Hashmap.hashToGetIndex(5)
+
+	t.Logf("Current hashmap %+v", testElements.Hashmap)
+	t.Logf("Value of hash3: %v", hash3)
+	t.Logf("Value of hash5: %v", hash5)
+
+	firstEmptySpace, err := testElements.Hashmap.findFirstEmptySpace(2)
+
+	if firstEmptySpace != 1 {
+		t.Errorf("Error: The first empty space found was not at index 1.\nfirstEmptySpace: %v", firstEmptySpace)
+	}
+
+	if err != nil {
+		t.Errorf("Error: The error was not nil, despite there being empty spaces in the map.\nerr: %v", err)
+	}
+}
+
+func TestFirstEmptySpaceOnInitialIndex(t *testing.T) {
+	testElements := createElements()
+
+	t.Log("Testing that findFirstEmptySpace works when the first empty space is the same as the input.")
+
+	testElements.Hashmap.put(3, 3)
+	testElements.Hashmap.put(5, 3)
+
+	hash3 := testElements.Hashmap.hashToGetIndex(3)
+	hash5 := testElements.Hashmap.hashToGetIndex(5)
+
+	t.Logf("Current hashmap %+v", testElements.Hashmap)
+	t.Logf("Value of hash3: %v", hash3)
+	t.Logf("Value of hash5: %v", hash5)
+
+	firstEmptySpace, err := testElements.Hashmap.findFirstEmptySpace(1)
+
+	if firstEmptySpace != 1 {
+		t.Errorf("Error: The first empty space found was not at index 1.\nfirstEmptySpace: %v", firstEmptySpace)
+	}
+
+	if err != nil {
+		t.Errorf("Error: The error was not nil, despite there being empty spaces in the map.\nerr: %v", err)
+	}
+}
+
+func TestMatchNotFound(t *testing.T) {
+	testElements := createElements()
+
+	testElements.Hashmap.put(3, 3)
+	testElements.Hashmap.put(5, 3)
+
+	hash3 := testElements.Hashmap.hashToGetIndex(3)
+	hash5 := testElements.Hashmap.hashToGetIndex(5)
+
+	t.Logf("Current hashmap %+v", testElements.Hashmap)
+	t.Logf("Value of hash3: %v", hash3)
+	t.Logf("Value of hash5: %v", hash5)
+
+	matchedIndex, err := testElements.Hashmap.findIndexOfMatchingKey(2)
+
+	if matchedIndex != 0 {
+		t.Errorf("Error: There should be no match found, so matched index should be 0. Matched Index: %v", matchedIndex)
+	}
+
+	if err == nil {
+		t.Errorf("Error: err should not be nil, because there is no match.\n %v", err)
+	}
+}
+
+func TestMatchFound(t *testing.T) {
+	testElements := createElements()
+
+	testElements.Hashmap.put(3, 3)
+	testElements.Hashmap.put(5, 3)
+	testElements.Hashmap.put(4, 3)
+
+	hash3 := testElements.Hashmap.hashToGetIndex(3)
+	hash4 := testElements.Hashmap.hashToGetIndex(4)
+	hash5 := testElements.Hashmap.hashToGetIndex(5)
+
+	t.Logf("Current hashmap %+v", testElements.Hashmap)
+	t.Logf("Value of hash3: %v", hash3)
+	t.Logf("Value of hash4: %v", hash4)
+	t.Logf("Value of hash5: %v", hash5)
+
+	matchedIndex, err := testElements.Hashmap.findIndexOfMatchingKey(4)
+
+	if matchedIndex != 1 {
+		t.Errorf("Error: The matched index was not 1. Matched Index: %v", matchedIndex)
+	}
+
+	if err != nil {
+		t.Errorf("Error: err should be nil, because the match should occur on the index input.\n %v", err)
 	}
 }
