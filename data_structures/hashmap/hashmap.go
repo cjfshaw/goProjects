@@ -8,7 +8,8 @@ type entry struct {
 }
 
 type hashmap struct {
-	Entries []*entry
+	Entries    []*entry
+	NumEntries int
 }
 
 func (hmap *hashmap) hashToGetIndex(key int) int {
@@ -23,14 +24,29 @@ func (hmap *hashmap) put(key int, value int) {
 	index := hmap.hashToGetIndex(key)
 
 	hmap.Entries[index] = &newEntry
+	hmap.NumEntries++
 }
 
-func (hmap *hashmap) get(key int) int {
+func (hmap *hashmap) get(key int) (int, error) {
+	var err error
+	var value int
 	index := hmap.hashToGetIndex(key)
 
-	value := hmap.Entries[index].Value
+	if hmap.Entries[index] == nil {
+		err = fmt.Errorf("Error, value of desired key is nil.")
+		return value, err
+	}
 
-	return value
+	value = hmap.Entries[index].Value
+
+	return value, err
+}
+
+func (hmap *hashmap) remove(key int) {
+	index := hmap.hashToGetIndex(key)
+
+	hmap.Entries[index] = nil
+	hmap.NumEntries--
 }
 
 func main() {
