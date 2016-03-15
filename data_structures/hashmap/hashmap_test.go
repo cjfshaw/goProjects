@@ -89,6 +89,51 @@ func TestGet(t *testing.T) {
 	}
 }
 
+func TestGetWithCollission(t *testing.T) {
+	testElements := createElements()
+
+	t.Log("Testing get when the element it is searching for is not found in it's immediate index.")
+	t.Log("Putting two elements into the map, who both want to be hashed at index 2.  It is expected that one will end up at index 2, and one will end up at index 0")
+
+	testElements.Hashmap.put(5, 5)
+	t.Logf("Hashmap after first put: %v", testElements.Hashmap)
+	testElements.Hashmap.put(8, 8)
+	t.Logf("Hashmap after second put: %v", testElements.Hashmap)
+
+	value1, getErr1 := testElements.Hashmap.get(5)
+	value2, getErr2 := testElements.Hashmap.get(8)
+	index1 := testElements.Hashmap.hashToGetIndex(5)
+	index2, matchErr := testElements.Hashmap.findIndexOfMatchingKey(8)
+
+	if value1 != 5 {
+		t.Errorf("Error: Value of first get (initial put) is not 5. \nValue: %v", value1)
+	}
+
+	if value2 != 8 {
+		t.Errorf("Error: Value of second get (second put) is not 8. \nValue: %v", value2)
+	}
+
+	if index1 != 2 {
+		t.Errorf("Error: Index of first put Entry is not 2.\nIndex: %v", index1)
+	}
+
+	if index2 != 0 {
+		t.Errorf("Error: Index of second put Entry is not 0.\nIndex: %v", index2)
+	}
+
+	if getErr1 != nil {
+		t.Errorf("Error: getErr1 is not nil.\n%v", getErr1)
+	}
+
+	if getErr2 != nil {
+		t.Errorf("Error: getErr2 is not nil.\n%v", getErr2)
+	}
+
+	if matchErr != nil {
+		t.Errorf("Error: matchErr is not nil.\n%v", matchErr)
+	}
+}
+
 func TestGetOnNil(t *testing.T) {
 	testElements := createElements()
 
@@ -116,6 +161,43 @@ func TestRemove(t *testing.T) {
 
 	if testElements.Hashmap.Entries[index] != nil {
 		t.Errorf("Error: Value of hashmap at removed key's index is not nil.  Value: %v", value)
+	}
+}
+
+func TestRemoveOnNil(t *testing.T) {
+	testElements := createElements()
+
+	t.Log("Testing remove on an empty map.")
+
+	err := testElements.Hashmap.remove(8)
+
+	if err == nil {
+		t.Errorf("Error: err was nil.")
+	}
+}
+
+func TestRemoveWithCollision(t *testing.T) {
+	testElements := createElements()
+
+	t.Log("Testing remove functionality when it is removing for a collision case.")
+
+	testElements.Hashmap.put(5, 5)
+	t.Logf("Hashmap after first put: %v", testElements.Hashmap)
+	testElements.Hashmap.put(8, 8)
+	t.Logf("Hashmap after second put: %v", testElements.Hashmap)
+	err := testElements.Hashmap.remove(8)
+	t.Logf("Hashmap after remove of key(8): %v", testElements.Hashmap)
+
+	if testElements.Hashmap.NumEntries != 1 {
+		t.Errorf("Error: NumEntries was not decremented. NumEntries: %v", testElements.Hashmap.NumEntries)
+	}
+
+	if testElements.Hashmap.Entries[0] != nil {
+		t.Errorf("Error: Entry was not removed.")
+	}
+
+	if err != nil {
+		t.Errorf("Error: err was not nil.\n%v", err)
 	}
 }
 

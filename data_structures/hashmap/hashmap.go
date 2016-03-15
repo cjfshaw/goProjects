@@ -29,8 +29,9 @@ func (hmap *hashmap) hashToGetIndex(key int) int {
 func (hmap *hashmap) findFirstEmptySpace(index int) (int, error) {
 	var err error
 	var newIndex, count int
+	fmt.Println("in findFirstEmptySpace")
 
-	for i := index; i != index+1; i = len(hmap.Entries) % (i + 1) {
+	for i := index; i != i+1; i = (i + 1) % len(hmap.Entries) {
 		fmt.Println("i", i)
 		if hmap.Entries[i] == nil {
 			fmt.Println("returning in nil")
@@ -40,10 +41,6 @@ func (hmap *hashmap) findFirstEmptySpace(index int) (int, error) {
 		if count >= len(hmap.Entries) {
 			err := fmt.Errorf("Error: No empty space found in this map to put.")
 			return newIndex, err
-		}
-
-		if i == 0 {
-			i++
 		}
 	}
 	fmt.Println("returning at end")
@@ -75,7 +72,7 @@ func (hmap *hashmap) findIndexOfMatchingKey(key int) (int, error) {
 
 	index := hmap.hashToGetIndex(key)
 
-	for i := index; i != index+1; i = len(hmap.Entries) % (i + 1) {
+	for i := index; i != i+1; i = (i + 1) % len(hmap.Entries) {
 		if hmap.Entries[i] == nil {
 			err := fmt.Errorf("Error: No matching entries containing this key found.")
 			return newIndex, err
@@ -98,15 +95,8 @@ func (hmap *hashmap) findIndexOfMatchingKey(key int) (int, error) {
 	return newIndex, err
 }
 
-func (hmap *hashmap) get(key int) (int, error) { //find matching key in get and remove
-	//var err error
+func (hmap *hashmap) get(key int) (int, error) {
 	var value int
-	/*index := hmap.hashToGetIndex(key)
-
-	if hmap.Entries[index] == nil {
-		err = fmt.Errorf("Error, value of desired key is nil.")
-		return value, err
-	}*/
 
 	index, err := hmap.findIndexOfMatchingKey(key)
 
@@ -120,11 +110,17 @@ func (hmap *hashmap) get(key int) (int, error) { //find matching key in get and 
 	return value, err
 }
 
-func (hmap *hashmap) remove(key int) { //find matching key in get and remove
-	index := hmap.hashToGetIndex(key)
+func (hmap *hashmap) remove(key int) error { //find matching key in get and remove
+	index, err := hmap.findIndexOfMatchingKey(key)
+
+	if err != nil {
+		return err
+	}
 
 	hmap.Entries[index] = nil
 	hmap.NumEntries--
+
+	return err
 }
 
 func main() {
