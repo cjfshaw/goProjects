@@ -329,3 +329,80 @@ func TestMatchFound(t *testing.T) {
 		t.Errorf("Error: err should be nil, because the match should occur on the index input.\n %v", err)
 	}
 }
+
+func TestResizeByPut(t *testing.T) {
+	testElements := createElements()
+
+	t.Log("Testing that resize properly doubles the size of the current Entries array and properly replaces each entry.")
+
+	testElements.Hashmap.put(3, 3)
+	testElements.Hashmap.put(5, 5)
+	testElements.Hashmap.put(4, 4)
+
+	hash3 := testElements.Hashmap.hashToGetIndex(3)
+	hash4 := testElements.Hashmap.hashToGetIndex(4)
+	hash5 := testElements.Hashmap.hashToGetIndex(5)
+
+	t.Logf("Hashmap before resize: %+v", testElements.Hashmap)
+	t.Logf("Value of hash3: %v", hash3)
+	t.Logf("Value of hash4: %v", hash4)
+	t.Logf("Value of hash5: %v", hash5)
+
+	testElements.Hashmap.put(6, 6)
+	hash6, err := testElements.Hashmap.findIndexOfMatchingKey(6)
+	t.Logf("Hashmap put caused a resize: %+v", testElements.Hashmap)
+	t.Logf("Value of hash6: %v", hash6)
+
+	newHash3 := testElements.Hashmap.hashToGetIndex(3)
+	newHash4 := testElements.Hashmap.hashToGetIndex(4)
+	newHash5 := testElements.Hashmap.hashToGetIndex(5)
+
+	if testElements.Hashmap.NumEntries != 4 {
+		t.Errorf("Error: NumEntries did not increment after put/resize. NumEntries: %v", testElements.Hashmap.NumEntries)
+	}
+
+	if len(testElements.Hashmap.Entries) != 6 {
+		t.Errorf("Error: Length of Entries array did not double (from 3 to 6). Length: %v", len(testElements.Hashmap.Entries))
+	}
+
+	if newHash3 != 0 {
+		t.Errorf("Error: newHash3 is incorrect. newHash3: %v. Was expecting 0", newHash3)
+	}
+
+	if newHash4 != 2 {
+		t.Errorf("Error: newHash4 is incorrect. newHash4: %v. Was expecting 2", newHash4)
+	}
+
+	if newHash5 != 1 {
+		t.Errorf("Error: newHash5 is incorrect. newHash5: %v. Was expecting 1", newHash5)
+	}
+
+	if hash6 != 3 {
+		t.Errorf("Error: hash6 is incorrect. hash6: %v. Was expecting 3", hash6)
+	}
+
+	if err != nil {
+		t.Errorf("Error: err is not nil.\n%v", err)
+	}
+}
+
+func TestGetAfterResizeAndPutWithCollision(t *testing.T) {
+	testElements := createElements()
+
+	t.Log("Testing that get works after a resize and new put (with collision).")
+
+	testElements.Hashmap.put(3, 3)
+	testElements.Hashmap.put(5, 5)
+	testElements.Hashmap.put(4, 4)
+	testElements.Hashmap.put(6, 6)
+
+	value6, err := testElements.Hashmap.get(6)
+
+	if value6 != 6 {
+		t.Errorf("Error: Value from get is not matched to the value input. Value: %v", value6)
+	}
+
+	if err != nil {
+		t.Errorf("Error: err is not nil.\n%v", err)
+	}
+}

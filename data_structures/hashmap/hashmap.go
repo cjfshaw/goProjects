@@ -29,12 +29,9 @@ func (hmap *hashmap) hashToGetIndex(key int) int {
 func (hmap *hashmap) findFirstEmptySpace(index int) (int, error) {
 	var err error
 	var newIndex, count int
-	fmt.Println("in findFirstEmptySpace")
 
 	for i := index; i != i+1; i = (i + 1) % len(hmap.Entries) {
-		fmt.Println("i", i)
 		if hmap.Entries[i] == nil {
-			fmt.Println("returning in nil")
 			return i, err
 		}
 		count++
@@ -43,20 +40,30 @@ func (hmap *hashmap) findFirstEmptySpace(index int) (int, error) {
 			return newIndex, err
 		}
 	}
-	fmt.Println("returning at end")
 	return newIndex, err
+}
+
+func (hmap *hashmap) resize() {
+	tempEntries := hmap.Entries
+	hmap.Entries = make([]*entry, 2*len(hmap.Entries))
+	hmap.NumEntries = 0
+
+	for _, oldEntry := range tempEntries {
+		hmap.put(oldEntry.Key, oldEntry.Value)
+	}
 }
 
 func (hmap *hashmap) put(key int, value int) error {
 	newEntry := entry{Key: key, Value: value}
 
+	if hmap.NumEntries == len(hmap.Entries) {
+		hmap.resize()
+	}
+
 	index := hmap.hashToGetIndex(key)
-	fmt.Println("index", index)
 
 	newIndex, err := hmap.findFirstEmptySpace(index)
-	fmt.Println("newindex", newIndex)
 	if err != nil {
-		fmt.Println("err found")
 		return err
 	}
 
@@ -110,7 +117,7 @@ func (hmap *hashmap) get(key int) (int, error) {
 	return value, err
 }
 
-func (hmap *hashmap) remove(key int) error { //find matching key in get and remove
+func (hmap *hashmap) remove(key int) error {
 	index, err := hmap.findIndexOfMatchingKey(key)
 
 	if err != nil {
