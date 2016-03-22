@@ -1,4 +1,4 @@
-package mergesort
+package main
 
 import "fmt"
 
@@ -62,19 +62,12 @@ func sortArrayOfTwo(input []int) []int {
 	}
 }
 
-func sortSingleArray(input []int) ([]int, error) {
-	var err error
-
-	/*if len(input) > 2 {
-		err = fmt.Errorf("Error: Length of array in sortSingleArray is greater than two.\nLength: %v", len(input))
-		return input, err
-	}*/
-
+func sortSingleArray(input []int) []int {
 	if len(input) == 1 {
-		return input, err
+		return input
 	} else {
 		sorted := sortArrayOfTwo(input)
-		return sorted, err
+		return sorted
 	}
 }
 
@@ -97,14 +90,38 @@ func mergeTwoArrays(left []int, right []int) []int {
 	return newArray
 }
 
-/*func mergeSort(input []int) []int {
-	left, right := splitArray(input)
-
-
-	//does the splitting but nothing else
-	//need to add comparing and then merging
-}*/
+func mergeSort(input []int) []int {
+	//break array, check length, if its long enough keep calling
+	//once you get returns then mergeTwoArrays
+	if len(input) == 1 {
+		return input
+	} else {
+		left, right := splitArray(input)
+		left = mergeSort(left)
+		right = mergeSort(right)
+		sorted := mergeTwoArrays(left, right)
+		return sorted
+		/*if len(left) > 2 {
+			sortedLeft := mergeSort(left)
+		} else {
+			sortedLeft := sortSingleArray(left)
+		}
+		if len(right) > 2 {
+			sortedRight := mergeSort(right)
+		} else {
+			sortedRight := sortSingleArray(right)
+		}
+		sorted := mergeTwoArrays(sortedLeft, sortedRight)
+		return sorted*/
+	}
+}
 
 func main() {
-	fmt.Println("Main ran.")
+	fmt.Println("Main Started.")
+
+	inputArray := []int{7, 1, 4, 8, 3}
+
+	sortedArray := mergeSort(inputArray)
+
+	fmt.Println("Sorted Array: ", sortedArray)
 }
