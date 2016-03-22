@@ -78,21 +78,31 @@ func mergeTwoArrays(left []int, right []int) []int {
 	lowestRight := 0
 
 	for i := 0; i < len(newArray); i++ {
-		if lowestLeft < len(left) && left[lowestLeft] <= right[lowestRight] {
-			newArray[i] = left[lowestLeft]
+		if lowestLeft < len(left) && lowestRight < len(right) {
+			currentLeft := left[lowestLeft]
+			currentRight := right[lowestRight]
+
+			if lowestLeft < len(left) && currentLeft <= currentRight {
+				newArray[i] = currentLeft
+				lowestLeft++
+			} else if lowestRight < len(right) {
+				newArray[i] = currentRight
+				lowestRight++
+			}
+		} else if lowestLeft < len(left) {
+			currentLeft := left[lowestLeft]
+			newArray[i] = currentLeft
 			lowestLeft++
 		} else if lowestRight < len(right) {
-			newArray[i] = right[lowestRight]
+			currentRight := right[lowestRight]
+			newArray[i] = currentRight
 			lowestRight++
 		}
 	}
-
 	return newArray
 }
 
 func mergeSort(input []int) []int {
-	//break array, check length, if its long enough keep calling
-	//once you get returns then mergeTwoArrays
 	if len(input) == 1 {
 		return input
 	} else {
@@ -101,25 +111,13 @@ func mergeSort(input []int) []int {
 		right = mergeSort(right)
 		sorted := mergeTwoArrays(left, right)
 		return sorted
-		/*if len(left) > 2 {
-			sortedLeft := mergeSort(left)
-		} else {
-			sortedLeft := sortSingleArray(left)
-		}
-		if len(right) > 2 {
-			sortedRight := mergeSort(right)
-		} else {
-			sortedRight := sortSingleArray(right)
-		}
-		sorted := mergeTwoArrays(sortedLeft, sortedRight)
-		return sorted*/
 	}
 }
 
 func main() {
 	fmt.Println("Main Started.")
 
-	inputArray := []int{7, 1, 4, 8, 3}
+	inputArray := []int{0, 7, 1, 4, 8, 3, 3, -1}
 
 	sortedArray := mergeSort(inputArray)
 
