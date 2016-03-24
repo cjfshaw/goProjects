@@ -50,7 +50,7 @@ func TestIsArrayEvenOdd(t *testing.T) {
 	}
 }
 
-func getLengthsEven(t *testing.T) {
+func TestGetLengthsEven(t *testing.T) {
 	arrays := makeArrays()
 
 	t.Log("Testing whether getLengths returns proper lengths on an even array.")
@@ -70,12 +70,12 @@ func getLengthsEven(t *testing.T) {
 	}
 }
 
-func getLengthsOdd(t *testing.T) {
+func TestGetLengthsOdd(t *testing.T) {
 	arrays := makeArrays()
 
 	t.Log("Testing whether getLengths returns proper lengths on an odd array.")
 
-	left, right, isEven := getLengths(arrays.EvenArray)
+	left, right, isEven := getLengths(arrays.OddArray)
 
 	if left == right {
 		t.Errorf("Error: Array Lengths are equal.\nLeft: %v\nRight: %v", left, right)
@@ -170,7 +170,7 @@ func TestSortSingleArrayOnOne(t *testing.T) {
 
 	t.Log("Testing whether sorting of a single array works when the array has one value.")
 
-	sorted, err := sortSingleArray(arrays.One)
+	sorted := sortSingleArray(arrays.One)
 
 	t.Log("Array has been sorted.")
 
@@ -180,10 +180,6 @@ func TestSortSingleArrayOnOne(t *testing.T) {
 
 	if len(sorted) != 1 {
 		t.Errorf("Error: Length of sorted array is not one.\nLengthL %v", len(sorted))
-	}
-
-	if err != nil {
-		t.Errorf("Error: err is not nil.\n%v", err)
 	}
 }
 
@@ -211,5 +207,18 @@ func TestSortingArrayOnMultiple(t *testing.T) {
 		if newArray2[i] < newArray2[i-1] {
 			t.Errorf("Error: Array is not sorted.\nArray: %v", newArray2)
 		}
+	}
+}
+
+func TestMergesort(t *testing.T) {
+	arrays := makeArrays()
+
+	t.Log("Testing whether mergesort works.")
+	t.Logf("Starting array: %v", arrays.OddArray)
+
+	sorted := mergeSort(arrays.OddArray)
+
+	if sorted[0] != 1 && sorted[1] != 3 && sorted[2] != 4 && sorted[3] != 7 && sorted[4] != 8 {
+		t.Errorf("Error: Array is not sorted.\nArray: %v", sorted)
 	}
 }

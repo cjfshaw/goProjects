@@ -1,7 +1,5 @@
 package main
 
-import "fmt"
-
 func isArrayEven(input []int) bool {
 	var isEven bool
 
@@ -112,14 +110,4 @@ func mergeSort(input []int) []int {
 		sorted := mergeTwoArrays(left, right)
 		return sorted
 	}
-}
-
-func main() {
-	fmt.Println("Main Started.")
-
-	inputArray := []int{0, 7, 1, 4, 8, 3, 3, -1}
-
-	sortedArray := mergeSort(inputArray)
-
-	fmt.Println("Sorted Array: ", sortedArray)
 }
