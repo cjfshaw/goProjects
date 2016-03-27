@@ -13,15 +13,28 @@ func main() {
 
 	fmt.Println(array)
 
-	for j := 0; j < len(array); j++ {
-		fmt.Println(j, array[j])
-		if string(array[j]) == " " {
-			for i := len(array) - 1; i > j; i-- {
-				array[i] = array[i-1]
+	for index, value := range array {
+		fmt.Println(index, value)
+		if string(value) == " " {
+			array[index] = "%"
+			for i := len(array) - 1; i > index; i-- {
+				if i == index+1 {
+					array[i] = "0"
+				} else {
+					array[i] = array[i-1]
+				}
+				fmt.Println(i, array)
+			}
+			for i := len(array) - 1; i > index; i-- {
+				if i == index+1 {
+					array[i] = "2"
+				} else {
+					array[i] = array[i-1]
+				}
 				fmt.Println(i, array)
 			}
 		}
-		j += 2
+		index += 2
 	}
 
 	fmt.Println(array)
