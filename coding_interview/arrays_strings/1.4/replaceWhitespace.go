@@ -5,6 +5,9 @@ import (
 	"strings"
 )
 
+//write a method to replace all spaces in a string with %20
+//you can assume that the string is of the right length
+
 func main() {
 	input := "Mr John Smith    "
 	//var temp string

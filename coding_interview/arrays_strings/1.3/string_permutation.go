@@ -2,6 +2,8 @@ package main
 
 import "fmt"
 
+//given two strings write a method to decide if one is a permutation of the other
+
 func getChars(input string) map[string]int {
 	charMap := make(map[string]int)
 

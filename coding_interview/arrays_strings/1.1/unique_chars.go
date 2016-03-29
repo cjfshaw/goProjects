@@ -2,6 +2,9 @@ package main
 
 import "fmt"
 
+//implement an algorithm to determine if a string has all unique characters
+//what id you cant use any additional data structures?
+
 func countCharsWithMap(input string) map[string]int {
 	charCount := make(map[string]int)
 

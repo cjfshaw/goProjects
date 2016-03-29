@@ -2,6 +2,8 @@ package main
 
 import "fmt"
 
+//implement a function void reverse (char *str) which reverses a null-terminated string
+
 func main() {
 	input := "a string"
 
