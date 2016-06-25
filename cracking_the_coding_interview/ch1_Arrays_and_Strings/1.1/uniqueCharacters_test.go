@@ -4,8 +4,8 @@ import (
 	"testing"
 )
 
-const uniqueChars = "abcd1234!@#$"
-const nonUniqueChars = "abcd1234!@#$$"
+const uniqueChars = "abcd"
+const nonUniqueChars = "abcdd"
 
 func TestUniqueCharactersFirstSolution(t *testing.T) {
 	myBool := true
@@ -55,16 +55,32 @@ func TestUniqueCharactersNoDataStructuresNaive2(t *testing.T) {
 	}
 }
 
-func TestUniqueCharactersOptimalSolution(t *testing.T) {
+func TestUniqueCharactersMyOptimalSolution(t *testing.T) {
 	myBool := true
 
-	myBool = uniqueCharactersOptimalSolution(uniqueChars)
+	myBool = uniqueCharactersMyOptimalSolution(uniqueChars)
 
 	if myBool != true {
 		t.Error("Error: String with all unique characters returned false.")
 	}
 
-	myBool = uniqueCharactersOptimalSolution(nonUniqueChars)
+	myBool = uniqueCharactersMyOptimalSolution(nonUniqueChars)
+
+	if myBool != false {
+		t.Error("Error: String with non unique characters returned true.")
+	}
+}
+
+func TestUniqueCharactersBookOptimalSolution(t *testing.T) {
+	myBool := true
+
+	myBool = uniqueCharactersBookOptimalSolution(uniqueChars)
+
+	if myBool != true {
+		t.Error("Error: String with all unique characters returned false.")
+	}
+
+	myBool = uniqueCharactersBookOptimalSolution(nonUniqueChars)
 
 	if myBool != false {
 		t.Error("Error: String with non unique characters returned true.")
