@@ -8,19 +8,31 @@ import (
 )
 
 func hopSteps(numSteps int) int {
-	//fmt.Printf("in hopsteps, current numSteps %d\n", numSteps)
 	if numSteps < 0 {
-		//fmt.Println("invalid")
 		return 0
 	} else if numSteps == 0 {
-		//fmt.Println("end of steps")
 		return 1
 	} else {
-		fmt.Printf("sum: %d\n", hopSteps(numSteps-1)+hopSteps(numSteps-2)+hopSteps(numSteps-3))
 		return hopSteps(numSteps-1) + hopSteps(numSteps-2) + hopSteps(numSteps-3)
 	}
 }
 
+func hopStepsDynamic(numSteps int, stepsMap *map[int]int) int {
+	if numSteps < 0 {
+		return 0
+	} else if numSteps == 0 {
+		return 1
+	} else if (*stepsMap)[numSteps] != 0 {
+		return (*stepsMap)[numSteps]
+	} else {
+		(*stepsMap)[numSteps] = hopStepsDynamic(numSteps-1, stepsMap) + hopStepsDynamic(numSteps-2, stepsMap) + hopStepsDynamic(numSteps-3, stepsMap)
+		return (*stepsMap)[numSteps]
+	}
+}
+
 func main() {
-	hopSteps(5)
+	stepsMap := make(map[int]int, 0)
+
+	hops := hopStepsDynamic(15, &stepsMap)
+	fmt.Println(hops)
 }
