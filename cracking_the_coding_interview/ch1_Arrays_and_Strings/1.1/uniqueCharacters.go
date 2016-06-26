@@ -9,6 +9,8 @@ import (
 )
 
 func uniqueCharactersFirstSolution(input string) bool {
+	//space complexity: O(n)
+	//time complexity: O(n)
 	characterMap := make(map[string]int, 0)
 
 	for _, value := range input {
@@ -22,6 +24,8 @@ func uniqueCharactersFirstSolution(input string) bool {
 }
 
 func uniqueCharactersNoDataStructuresNaive(input string) bool {
+	//space complexity: O(n)
+	//time complexity: O(n^2)
 	for i := 0; i < len(input); i++ {
 		for j := i + 1; j < len(input); j++ {
 			if input[i] == input[j] {
@@ -37,6 +41,8 @@ func uniqueCharactersNoDataStructuresNaive2(input string) bool {
 	//This solution says "I will sort the input, then compare each character to it's neighbor."
 	//If I never find a character equal to it's neighbor then there are no duplicates.
 
+	//space complexity: O(n)
+	//time complexity: O(n)
 	inputArray := strings.Fields(input)
 
 	sort.Strings(inputArray)
@@ -70,10 +76,13 @@ func uniqueCharactersBookOptimalSolution(input string) bool {
 }
 
 func setBit(bitStore *int, position uint) {
+	//shift 1 over by x bits, where x is the position variable
+	//or this with bitstore to set the bit at position to 1
 	*bitStore |= (1 << position)
 }
 
 func isBitSet(bitStore *int, position uint) bool {
+	//and the bitstore variable with the bit at position
 	value := *bitStore & (1 << position)
 	return (value > 0)
 }
@@ -83,6 +92,9 @@ func uniqueCharactersMyOptimalSolution(input string) bool {
 	//if a bit is 0, you havent seen the corresponding character before
 	//set it and keep iterating
 	//if a bit is 1, you have seen it before, return false
+
+	//space complexity: O(n)
+	//time complexity: O(n)
 	bitStore := 0
 
 	for i := 0; i < len(input); i++ {
